@@ -1,4 +1,4 @@
--- X-FikHAX | Blade Ball GACOR Script by FIK
+-- X-FikHAX | Blade Ball GACOR Script - Delta Optimized
 
 -- GUI LIB
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
@@ -38,26 +38,26 @@ Toggle.MouseButton1Click:Connect(function()
     Toggle.BackgroundColor3 = AutoParry and Color3.fromRGB(40, 170, 90) or Color3.fromRGB(180, 40, 40)
 end)
 
--- AUTO PARRY ENGINE
+-- MOBILE-FRIENDLY AUTO PARRY ENGINE
 task.spawn(function()
-    local rs = game:GetService("RunService")
-    rs.Heartbeat:Connect(function()
-        if not AutoParry then return end
+    while task.wait(0.1) do
+        if not AutoParry then continue end
 
         local ball = workspace:FindFirstChild("Ball")
-        if not ball or not ball:FindFirstChild("Velocity") then return end
-
         local char = game.Players.LocalPlayer.Character
-        if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+        if not (ball and ball:FindFirstChild("Velocity")) then continue end
+        if not (char and char:FindFirstChild("HumanoidRootPart")) then continue end
 
         local dist = (ball.Position - char.HumanoidRootPart.Position).Magnitude
-        local velocity = ball.Velocity.Magnitude
+        local speed = ball.Velocity.Magnitude
 
-        if dist < 25 and velocity > 40 then
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ParryButtonPress"):Fire()
-            wait(0.15) -- no delay mode
+        if dist < 25 and speed > 40 then
+            local remote = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
+            if remote and remote:FindFirstChild("ParryButtonPress") then
+                remote.ParryButtonPress:Fire()
+            end
         end
-    end)
+    end
 end)
 
 -- CLOSE BUTTON
